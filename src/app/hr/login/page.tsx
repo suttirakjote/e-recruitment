@@ -9,6 +9,7 @@ export default function HrLoginPage() {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -22,6 +23,8 @@ export default function HrLoginPage() {
       password,
     });
     if (authError) {
+      // log ไว้ช่วย debug (เช่น anon key ผิด / rate limit) โดยไม่โชว์รายละเอียดให้ผู้ใช้เห็น
+      console.error("HR login error:", authError.message);
       setLoading(false);
       setError("อีเมลหรือรหัสผ่านไม่ถูกต้อง");
       return;
@@ -43,8 +46,23 @@ export default function HrLoginPage() {
               onChange={(e) => setEmail(e.target.value)} />
           </Field>
           <Field label="รหัสผ่าน" required>
-            <Input type="password" value={password} required
-              onChange={(e) => setPassword(e.target.value)} />
+            <div className="relative">
+              <Input
+                type={showPassword ? "text" : "password"}
+                value={password}
+                required
+                autoComplete="current-password"
+                className="pr-16"
+                onChange={(e) => setPassword(e.target.value)}
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword((v) => !v)}
+                className="absolute inset-y-0 right-0 px-3 text-xs font-medium text-stone-500 hover:text-stone-700"
+              >
+                {showPassword ? "ซ่อน" : "แสดง"}
+              </button>
+            </div>
           </Field>
           {error && <p className="text-sm text-rose-600">{error}</p>}
           <Button type="submit" className="w-full" disabled={loading}>
