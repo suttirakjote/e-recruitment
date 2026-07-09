@@ -1,6 +1,8 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
+const HR_PORTAL_ROLES = ["hr_admin", "hr_staff", "approver", "viewer", "manager"];
+
 export async function middleware(request: NextRequest) {
   let response = NextResponse.next({ request });
 
@@ -40,10 +42,28 @@ export async function middleware(request: NextRequest) {
     url.pathname = "/hr/login";
     return NextResponse.redirect(url);
   }
-  if (pathname === "/hr/login" && user) {
-    const url = request.nextUrl.clone();
-    url.pathname = "/hr";
-    return NextResponse.redirect(url);
+
+  // บัญชีที่ล็อกอินแล้ว: เช็ค role เพื่อพาไปโซนที่ถูกต้อง
+  // (พนักงาน ESS ล้วนไม่มีสิทธิ์เข้า /hr — เดิมจะค้างที่หน้า "ไม่มีสิทธิ์" โดยไม่มีทางไปต่อ)
+  if (user && (pathname === "/hr/login" || pathname.startsWith("/hr"))) {
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("role")
+      .eq("id", user.id)
+      .eq("is_active", true)
+      .maybeSingle();
+    const isHrPortalUser = !!profile && HR_PORTAL_ROLES.includes(profile.role);
+
+    if (pathname === "/hr/login") {
+      const url = request.nextUrl.clone();
+      url.pathname = isHrPortalUser ? "/hr" : "/me";
+      return NextResponse.redirect(url);
+    }
+    if (pathname.startsWith("/hr") && !isHrPortalUser) {
+      const url = request.nextUrl.clone();
+      url.pathname = "/me";
+      return NextResponse.redirect(url);
+    }
   }
 
   return response;

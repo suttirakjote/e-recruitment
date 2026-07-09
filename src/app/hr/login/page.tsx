@@ -36,9 +36,10 @@ export default function HrLoginPage() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-stone-100 px-4">
       <Card className="w-full max-w-sm">
-        <h1 className="text-xl font-bold text-stone-900">HR Portal</h1>
+        <h1 className="text-xl font-bold text-stone-900">เข้าสู่ระบบ</h1>
         <p className="mt-1 text-sm text-stone-500">
-          สำหรับพนักงาน HR และผู้อนุมัติ (บัญชีสร้างโดยผู้ดูแลระบบ)
+          สำหรับพนักงาน, HR และผู้อนุมัติ (บัญชีสร้างโดยผู้ดูแลระบบ) —
+          ระบบจะพาไปหน้าที่ตรงกับสิทธิ์ของคุณโดยอัตโนมัติ
         </p>
         <form onSubmit={handleLogin} className="mt-6 space-y-4">
           <Field label="อีเมล" required>

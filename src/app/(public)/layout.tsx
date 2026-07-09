@@ -30,7 +30,7 @@ export default async function PublicLayout({
               href="/hr"
               className="rounded-lg border border-stone-300 px-3 py-1.5 hover:bg-stone-50"
             >
-              สำหรับ HR
+              เข้าสู่ระบบพนักงาน / HR
             </Link>
           </nav>
         </div>
