@@ -151,7 +151,7 @@ export default async function ApprovalProcessPage() {
             <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
               <div>
                 <Link
-                  href={`/hr/applications/${g.application_id}`}
+                  href={`/hr/recruitment/applications/${g.application_id}`}
                   className="font-semibold text-stone-900 hover:text-emerald-700"
                 >
                   {g.applicant}
@@ -185,7 +185,7 @@ export default async function ApprovalProcessPage() {
                 <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
                   <div>
                     <Link
-                      href={`/hr/applications/${g.application_id}`}
+                      href={`/hr/recruitment/applications/${g.application_id}`}
                       className="font-semibold text-stone-900 hover:text-emerald-700"
                     >
                       {g.applicant}

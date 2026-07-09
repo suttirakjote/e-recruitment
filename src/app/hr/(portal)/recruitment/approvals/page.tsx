@@ -71,7 +71,7 @@ export default async function ApprovalsPage() {
             <div className="flex flex-wrap items-start justify-between gap-3">
               <div>
                 <Link
-                  href={`/hr/applications/${step.application_id}`}
+                  href={`/hr/recruitment/applications/${step.application_id}`}
                   className="text-lg font-semibold text-stone-900 hover:text-emerald-700"
                 >
                   {step.applications?.first_name} {step.applications?.last_name}
@@ -85,7 +85,7 @@ export default async function ApprovalsPage() {
                   ลำดับของคุณ: Level {step.level} — {step.step_title}
                 </p>
                 <Link
-                  href={`/hr/applications/${step.application_id}`}
+                  href={`/hr/recruitment/applications/${step.application_id}`}
                   className="mt-1 inline-block text-sm text-emerald-700 hover:underline"
                 >
                   ดูใบสมัครฉบับเต็ม + CV →

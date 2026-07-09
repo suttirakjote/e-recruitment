@@ -56,7 +56,7 @@ export default async function HrApplicationsPage({
           กรอง
         </button>
         {(status || job) && (
-          <Link href="/hr/applications"
+          <Link href="/hr/recruitment/applications"
             className="rounded-lg px-3 py-1.5 text-sm text-stone-500 hover:bg-stone-100">
             ล้างตัวกรอง
           </Link>
@@ -77,7 +77,7 @@ export default async function HrApplicationsPage({
             {applications?.map((a) => (
               <tr key={a.id} className="border-b border-stone-100 last:border-0 hover:bg-stone-50">
                 <td className="px-6 py-3">
-                  <Link href={`/hr/applications/${a.id}`}
+                  <Link href={`/hr/recruitment/applications/${a.id}`}
                     className="font-medium text-stone-800 hover:text-emerald-700">
                     {a.first_name} {a.last_name}
                   </Link>

@@ -18,11 +18,12 @@ export default async function HrDashboard() {
     data: { user },
   } = await supabase.auth.getUser();
 
-  const [openJobs, newApps, pendingApproval, myQueue, recent] =
+  const [employeeCount, openJobs, newApps, myQueue, recent] =
     await Promise.all([
+      supabase.from("employees").select("id", { count: "exact", head: true })
+        .in("status", ["active", "probation", "on_leave"]),
       supabase.from("jobs").select("id", { count: "exact", head: true }).eq("status", "open"),
       supabase.from("applications").select("id", { count: "exact", head: true }).gte("submitted_at", weekAgo),
-      supabase.from("applications").select("id", { count: "exact", head: true }).eq("status", "pending_approval"),
       supabase.from("application_approvals").select("id", { count: "exact", head: true })
         .eq("approver_id", user?.id ?? "").eq("decision", "pending"),
       supabase.from("applications")
@@ -32,15 +33,15 @@ export default async function HrDashboard() {
     ]);
 
   const stats = [
-    { label: "ตำแหน่งที่เปิดรับ", value: openJobs.count ?? 0, href: "/hr/jobs" },
-    { label: "ใบสมัครใหม่ (7 วัน)", value: newApps.count ?? 0, href: "/hr/applications" },
-    { label: "รออนุมัติ", value: pendingApproval.count ?? 0, href: "/hr/applications?status=pending_approval" },
-    { label: "รอฉันอนุมัติ", value: myQueue.count ?? 0, href: "/hr/approvals" },
+    { label: "พนักงานทั้งหมด", value: employeeCount.count ?? 0, href: "/hr/employees" },
+    { label: "ตำแหน่งที่เปิดรับ", value: openJobs.count ?? 0, href: "/hr/recruitment/jobs" },
+    { label: "ใบสมัครใหม่ (7 วัน)", value: newApps.count ?? 0, href: "/hr/recruitment/applications" },
+    { label: "รอฉันอนุมัติ", value: myQueue.count ?? 0, href: "/hr/recruitment/approvals" },
   ];
 
   return (
     <div>
-      <h1 className="text-2xl font-bold text-stone-900">ภาพรวมระบบรับสมัครงาน</h1>
+      <h1 className="text-2xl font-bold text-stone-900">ภาพรวม</h1>
 
       <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {stats.map((s) => (
@@ -56,7 +57,7 @@ export default async function HrDashboard() {
       <Card className="mt-6">
         <div className="flex items-center justify-between">
           <h2 className="font-semibold text-stone-800">ใบสมัครล่าสุด</h2>
-          <Link href="/hr/applications" className="text-sm text-emerald-700 hover:underline">
+          <Link href="/hr/recruitment/applications" className="text-sm text-emerald-700 hover:underline">
             ดูทั้งหมด →
           </Link>
         </div>
@@ -73,7 +74,7 @@ export default async function HrDashboard() {
             {(recent.data as unknown as Application[] | null)?.map((a) => (
               <tr key={a.id} className="border-b border-stone-100 last:border-0 hover:bg-stone-50">
                 <td className="py-2.5">
-                  <Link href={`/hr/applications/${a.id}`} className="font-medium text-stone-800 hover:text-emerald-700">
+                  <Link href={`/hr/recruitment/applications/${a.id}`} className="font-medium text-stone-800 hover:text-emerald-700">
                     {a.first_name} {a.last_name}
                   </Link>
                 </td>

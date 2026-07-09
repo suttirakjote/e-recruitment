@@ -119,3 +119,81 @@ export async function saveSetting(key: string, value: unknown): Promise<ActionRe
   revalidatePath("/", "layout");
   return { ok: true };
 }
+
+/* ---------- ปฏิทินงาน: วันทำงาน / วันหยุด / ประเภทลา ---------- */
+
+export async function saveWorkingWeekdays(weekdays: number[]): Promise<ActionResult> {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  const { error } = await supabase.from("site_settings").upsert({
+    key: "working_weekdays",
+    value: weekdays,
+    updated_by: user?.id,
+    updated_at: new Date().toISOString(),
+  });
+  if (error) {
+    console.error(error);
+    return { ok: false, error: "บันทึกวันทำงานไม่สำเร็จ" };
+  }
+  revalidatePath("/hr/settings/work-calendar");
+  revalidatePath("/hr/leave-summary");
+  return { ok: true };
+}
+
+export async function addHoliday(formData: FormData): Promise<ActionResult> {
+  const supabase = await createClient();
+  const date = (formData.get("holiday_date") as string)?.trim();
+  const name = (formData.get("name") as string)?.trim();
+  if (!date || !name) return { ok: false, error: "กรุณากรอกวันที่และชื่อวันหยุด" };
+
+  const { error } = await supabase.from("company_holidays").insert({ holiday_date: date, name });
+  if (error) {
+    if (error.code === "23505") return { ok: false, error: "วันที่นี้เป็นวันหยุดอยู่แล้ว" };
+    console.error(error);
+    return { ok: false, error: "เพิ่มวันหยุดไม่สำเร็จ" };
+  }
+  revalidatePath("/hr/settings/work-calendar");
+  revalidatePath("/hr/leave-summary");
+  return { ok: true };
+}
+
+export async function deleteHoliday(date: string): Promise<ActionResult> {
+  const supabase = await createClient();
+  const { error } = await supabase.from("company_holidays").delete().eq("holiday_date", date);
+  if (error) return { ok: false, error: "ลบไม่สำเร็จ" };
+  revalidatePath("/hr/settings/work-calendar");
+  revalidatePath("/hr/leave-summary");
+  return { ok: true };
+}
+
+export async function saveLeaveType(formData: FormData): Promise<ActionResult> {
+  const supabase = await createClient();
+  const id = (formData.get("id") as string) || null;
+  const payload = {
+    name: (formData.get("name") as string)?.trim(),
+    annual_quota_days: Number(formData.get("annual_quota_days") || 0),
+    color: (formData.get("color") as string) || null,
+  };
+  if (!payload.name) return { ok: false, error: "กรุณากรอกชื่อประเภทลา" };
+
+  const { error } = id
+    ? await supabase.from("leave_types").update(payload).eq("id", id)
+    : await supabase.from("leave_types").insert(payload);
+  if (error) {
+    console.error(error);
+    return { ok: false, error: "บันทึกประเภทลาไม่สำเร็จ" };
+  }
+  revalidatePath("/hr/settings/work-calendar");
+  revalidatePath("/hr/leave-summary");
+  return { ok: true };
+}
+
+export async function deleteLeaveType(id: string): Promise<ActionResult> {
+  const supabase = await createClient();
+  const { error } = await supabase.from("leave_types").delete().eq("id", id);
+  if (error) return { ok: false, error: "ลบไม่สำเร็จ — อาจมีรายการลาที่ใช้ประเภทนี้อยู่" };
+  revalidatePath("/hr/settings/work-calendar");
+  return { ok: true };
+}

@@ -31,7 +31,7 @@ export function JobForm({
       setError(result.error);
       return;
     }
-    router.push("/hr/jobs");
+    router.push("/hr/recruitment/jobs");
     router.refresh();
   }
 

@@ -63,7 +63,7 @@ export async function saveJob(formData: FormData): Promise<ActionResult> {
       .insert(recruiterIds.map((profileId) => ({ job_id: jobId, profile_id: profileId })));
   }
 
-  revalidatePath("/hr/jobs");
+  revalidatePath("/hr/recruitment/jobs");
   return { ok: true };
 }
 
@@ -77,7 +77,7 @@ export async function setJobStatus(jobId: string, status: string): Promise<Actio
   if (status === "closed") patch.closed_at = new Date().toISOString();
   const { error } = await supabase.from("jobs").update(patch).eq("id", jobId);
   if (error) return fail(error, "เปลี่ยนสถานะตำแหน่งไม่สำเร็จ");
-  revalidatePath("/hr/jobs");
+  revalidatePath("/hr/recruitment/jobs");
   revalidatePath("/jobs");
   return { ok: true };
 }
@@ -114,8 +114,8 @@ export async function updateApplicationStatus(
     }
   }
 
-  revalidatePath(`/hr/applications/${applicationId}`);
-  revalidatePath("/hr/applications");
+  revalidatePath(`/hr/recruitment/applications/${applicationId}`);
+  revalidatePath("/hr/recruitment/applications");
   return { ok: true };
 }
 
@@ -131,7 +131,7 @@ export async function addNote(applicationId: string, body: string): Promise<Acti
     body: body.trim(),
   });
   if (error) return fail(error, "บันทึกโน้ตไม่สำเร็จ");
-  revalidatePath(`/hr/applications/${applicationId}`);
+  revalidatePath(`/hr/recruitment/applications/${applicationId}`);
   return { ok: true };
 }
 
@@ -155,7 +155,7 @@ export async function startApproval(applicationId: string): Promise<ActionResult
     }
     return fail(error, "ส่งเข้าสายอนุมัติไม่สำเร็จ");
   }
-  revalidatePath(`/hr/applications/${applicationId}`);
+  revalidatePath(`/hr/recruitment/applications/${applicationId}`);
   return { ok: true };
 }
 
@@ -175,6 +175,6 @@ export async function decideApproval(
     }
     return fail(error, "บันทึกผลการอนุมัติไม่สำเร็จ");
   }
-  revalidatePath("/hr/approvals");
+  revalidatePath("/hr/recruitment/approvals");
   return { ok: true };
 }

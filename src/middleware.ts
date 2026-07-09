@@ -30,7 +30,12 @@ export async function middleware(request: NextRequest) {
   } = await supabase.auth.getUser();
 
   const { pathname } = request.nextUrl;
-  if (pathname.startsWith("/hr") && pathname !== "/hr/login" && !user) {
+
+  // ต้องล็อกอินก่อนเข้า /hr/* และ /me/*
+  const needsAuth =
+    (pathname.startsWith("/hr") && pathname !== "/hr/login") ||
+    pathname.startsWith("/me");
+  if (needsAuth && !user) {
     const url = request.nextUrl.clone();
     url.pathname = "/hr/login";
     return NextResponse.redirect(url);
@@ -45,5 +50,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/hr/:path*"],
+  matcher: ["/hr/:path*", "/me/:path*"],
 };

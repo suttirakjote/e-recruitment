@@ -43,7 +43,7 @@ export default async function HrJobDetailPage({
     <div>
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <Link href="/hr/jobs" className="text-sm text-stone-500 hover:text-emerald-700">
+          <Link href="/hr/recruitment/jobs" className="text-sm text-stone-500 hover:text-emerald-700">
             ← ตำแหน่งงานทั้งหมด
           </Link>
           <div className="mt-1 flex items-center gap-3">
@@ -59,7 +59,7 @@ export default async function HrJobDetailPage({
         </div>
         <div className="flex gap-2">
           <JobStatusToggle jobId={job.id} status={job.status} />
-          <Link href={`/hr/jobs/${job.id}/edit`}
+          <Link href={`/hr/recruitment/jobs/${job.id}/edit`}
             className="rounded-lg bg-stone-100 px-3 py-1.5 text-xs font-medium text-stone-600 hover:bg-stone-200">
             แก้ไขตำแหน่ง
           </Link>
@@ -78,7 +78,7 @@ export default async function HrJobDetailPage({
               </div>
               <div className="mt-3 divide-y divide-stone-100">
                 {apps.map((a) => (
-                  <Link key={a.id} href={`/hr/applications/${a.id}`}
+                  <Link key={a.id} href={`/hr/recruitment/applications/${a.id}`}
                     className="flex items-center justify-between py-2 hover:bg-stone-50">
                     <span className="font-medium text-stone-800">
                       {a.first_name} {a.last_name}

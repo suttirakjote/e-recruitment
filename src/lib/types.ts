@@ -1,4 +1,4 @@
-import type { ApplicationStatus, JobStatus } from "./status";
+import type { ApplicationStatus, EmployeeStatus, JobStatus } from "./status";
 
 export interface Department {
   id: string;
@@ -7,15 +7,53 @@ export interface Department {
   name_en: string | null;
 }
 
+export interface Position {
+  id: string;
+  code: string | null;
+  title: string;
+  department_id: string | null;
+}
+
+export interface Employee {
+  id: string;
+  employee_code: string | null;
+  prefix: string | null;
+  first_name: string;
+  last_name: string;
+  first_name_en: string | null;
+  last_name_en: string | null;
+  nickname: string | null;
+  department_id: string | null;
+  position_id: string | null;
+  position_title: string | null;
+  manager_id: string | null;
+  employment_type: string;
+  status: EmployeeStatus;
+  hire_date: string | null;
+  probation_end_date: string | null;
+  resign_date: string | null;
+  email: string | null;
+  phone: string | null;
+  national_id: string | null;
+  birth_date: string | null;
+  gender: string | null;
+  address: string | null;
+  photo_path: string | null;
+  application_id: string | null;
+  departments?: { name_th: string } | null;
+  manager?: { first_name: string; last_name: string } | null;
+}
+
 export interface Profile {
   id: string;
   full_name: string;
   email: string;
-  role: "hr_admin" | "hr_staff" | "approver" | "viewer";
+  role: "hr_admin" | "hr_staff" | "approver" | "viewer" | "manager" | "employee";
   job_title: string | null;
   department_id: string | null;
   is_active: boolean;
   photo_path: string | null;
+  employee_id: string | null;
 }
 
 export interface Job {

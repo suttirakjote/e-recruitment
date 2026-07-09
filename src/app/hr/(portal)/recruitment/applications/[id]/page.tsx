@@ -16,6 +16,7 @@ import type {
 import { FormDataView } from "@/components/hr/form-data-view";
 import { Avatar } from "@/components/hr/avatar";
 import { CvPreview } from "@/components/hr/cv-preview";
+import { HireButton } from "@/components/hr/hire-button";
 import {
   NoteForm,
   StartApprovalButton,
@@ -89,12 +90,19 @@ export default async function ApplicationDetailPage({
   const cv = signedFiles.find((f) => f.file_type === "cv");
   const photo = signedFiles.find((f) => f.file_type === "photo");
 
+  // พนักงานที่รับเข้าจากใบสมัครนี้ (ถ้ามี)
+  const { data: linkedEmployee } = await supabase
+    .from("employees")
+    .select("id")
+    .eq("application_id", id)
+    .maybeSingle();
+
   const writer = profile ? canWrite(profile) : false;
   const hasApprovals = (approvals?.length ?? 0) > 0;
 
   return (
     <div>
-      <Link href="/hr/applications" className="text-sm text-stone-500 hover:text-emerald-700">
+      <Link href="/hr/recruitment/applications" className="text-sm text-stone-500 hover:text-emerald-700">
         ← ใบสมัครทั้งหมด
       </Link>
 
@@ -152,6 +160,15 @@ export default async function ApplicationDetailPage({
                     ส่งเข้าสายอนุมัติตามแผนกเพื่อขออนุมัติรับเข้าทำงาน
                   </p>
                   <StartApprovalButton applicationId={app.id} />
+                </div>
+              )}
+              {(app.status === "approved" || app.status === "offer_sent" ||
+                app.status === "hired" || linkedEmployee) && (
+                <div className="mt-4 border-t border-stone-100 pt-4">
+                  <HireButton
+                    applicationId={app.id}
+                    existingEmployeeId={linkedEmployee?.id ?? null}
+                  />
                 </div>
               )}
             </Card>

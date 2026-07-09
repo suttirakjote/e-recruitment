@@ -28,7 +28,7 @@ export default async function HrJobsPage() {
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold text-stone-900">ตำแหน่งงาน</h1>
         <Link
-          href="/hr/jobs/new"
+          href="/hr/recruitment/jobs/new"
           className="rounded-lg bg-emerald-700 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-800"
         >
           + สร้างตำแหน่งใหม่
@@ -51,7 +51,7 @@ export default async function HrJobsPage() {
             {jobs?.map((job) => (
               <tr key={job.id} className="border-b border-stone-100 last:border-0 hover:bg-stone-50">
                 <td className="px-6 py-3">
-                  <Link href={`/hr/jobs/${job.id}`} className="font-medium text-stone-800 hover:text-emerald-700">
+                  <Link href={`/hr/recruitment/jobs/${job.id}`} className="font-medium text-stone-800 hover:text-emerald-700">
                     {job.title}
                   </Link>
                 </td>
@@ -63,7 +63,7 @@ export default async function HrJobsPage() {
                 </td>
                 <td className="px-4 py-3 text-center text-stone-600">{job.openings}</td>
                 <td className="px-4 py-3 text-center">
-                  <Link href={`/hr/jobs/${job.id}`}
+                  <Link href={`/hr/recruitment/jobs/${job.id}`}
                     className="font-semibold text-emerald-700 hover:underline">
                     {job.applications?.[0]?.count ?? 0}
                   </Link>
@@ -71,7 +71,7 @@ export default async function HrJobsPage() {
                 <td className="px-4 py-3">
                   <div className="flex justify-end gap-2">
                     <JobStatusToggle jobId={job.id} status={job.status} />
-                    <Link href={`/hr/jobs/${job.id}/edit`}
+                    <Link href={`/hr/recruitment/jobs/${job.id}/edit`}
                       className="rounded-lg bg-stone-100 px-3 py-1.5 text-xs font-medium text-stone-600 hover:bg-stone-200">
                       แก้ไข
                     </Link>
